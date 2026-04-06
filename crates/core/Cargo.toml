@@ -1,5 +1,5 @@
 [package]
-name = "actrpc-core"
+name = "actrpc_core"
 version = "0.1.0"
 edition = "2024"
 
