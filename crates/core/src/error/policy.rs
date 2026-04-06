@@ -1,6 +1,5 @@
-use serde::{Deserialize, Serialize};
-
 use crate::{action::ActionKind, interception::InterceptionPhase};
+use serde::{Deserialize, Serialize};
 
 #[non_exhaustive]
 #[derive(Debug, thiserror::Error, Clone, Deserialize, Serialize, PartialEq)]
