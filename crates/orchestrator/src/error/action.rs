@@ -1,0 +1,20 @@
+use crate::error::ActionHandlerError;
+use actrpc_core::action::ActionKind;
+
+#[non_exhaustive]
+#[derive(Debug, thiserror::Error)]
+pub enum ActionError {
+    #[error("no registered action handler for action {action}")]
+    HandlerNotFound { action: ActionKind },
+
+    #[error("action handler failed for interceptor {interceptor}, action {action}: {source}")]
+    HandlerFailed {
+        interceptor: String,
+        action: actrpc_core::action::ActionKind,
+        #[source]
+        source: ActionHandlerError,
+    },
+
+    #[error("duplicate action registration for kind {kind}")]
+    DuplicateRegistration { kind: ActionKind },
+}

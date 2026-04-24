@@ -1,37 +1,32 @@
+use actrpc_core::error::CodecError;
+use actrpc_transport::TransportError;
+
+mod action;
+mod action_execution;
+mod action_handler;
+mod interceptor;
+mod interceptor_runtime;
+
+pub use action::ActionError;
+pub use action_execution::ActionExecutionError;
+pub use action_handler::ActionHandlerError;
+pub use interceptor::InterceptorError;
+pub use interceptor_runtime::InterceptorRuntimeError;
+
 #[non_exhaustive]
 #[derive(Debug, thiserror::Error)]
 pub enum OrchestratorError {
-    #[error("unknown action kind: {kind}")]
-    UnknownAction {
-        kind: actrpc_core::action::ActionKind,
-    },
-
-    #[error("interceptor registry error: {message}")]
-    InterceptorRegistry { message: String },
-
-    #[error("action registry error: {message}")]
-    ActionRegistry { message: String },
-
-    #[error("interceptor invocation failed for {name}: {message}")]
-    InterceptorInvocation { name: String, message: String },
-
-    #[error("downstream forwarding failed: {message}")]
-    Forwarding { message: String },
+    #[error(transparent)]
+    Action(#[from] ActionError),
 
     #[error(transparent)]
-    Transport(#[from] actrpc_transport::TransportError),
+    Interceptor(#[from] InterceptorError),
 
     #[error(transparent)]
-    ActionCodec(#[from] actrpc_core::error::ActionCodecError),
+    Transport(#[from] TransportError),
 
     #[error(transparent)]
-    Interception(#[from] actrpc_core::error::InterceptionError),
-
-    #[error(transparent)]
-    Protocol(#[from] actrpc_core::error::ProtocolError),
-
-    #[error(transparent)]
-    Codec(#[from] actrpc_core::error::CodecError),
+    Codec(#[from] CodecError),
 
     #[error("internal orchestrator error: {message}")]
     Internal { message: String },
